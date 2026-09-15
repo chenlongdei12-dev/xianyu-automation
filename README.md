@@ -19,21 +19,45 @@ export  六步QA  红字封面  三通道互不阻断  汇总反馈
 | 传 | `transcript-pipeline` | 总编排：状态机断点续跑 + ima 合并上传 + 网盘加密 zip 交付 |
 | 报 | `transcript-pipeline` | `state.py links` 一条命令输出三通道链接 |
 
-## 快速开始
+## 快速开始（空白电脑三步部署）
 
 ```bash
 # 1. 安装：把 skills/ 下四个目录复制到你的 agent skills 目录
 cp -r skills/* ~/.workbuddy/skills/   # 或你的 Claude Code / OpenClaw skills 目录
 
-# 2. 初始化状态（工作根目录放博主逐字稿文件夹）
+# 2. 环境自检：缺什么给什么修复命令（python 包 / zip / node / 网盘 CLI / 字体 / 登录态清单）
+python3 skills/transcript-pipeline/scripts/doctor.py
+
+# 3. 各平台登录（人工，一次性）：
+#    Get笔记  → biji_export.py login（需 GUI 机器跑一次，之后 token 自动无头刷新）
+#    ima      → ~/.config/ima/{client_id,api_key}（ima.qq.com/agent-interface 申请）
+#    百度网盘 → bdpan login（需 baidu-drive skill）
+#    夸克网盘 → quark-drive login（需 quarkclouddrive skill）
+```
+
+### 依赖的配套 skill（上传环节）
+
+| 通道 | 配套 skill | 缺失影响 |
+|---|---|---|
+| ima 知识库 | `ima-skill`（官方 OpenAPI 封装） | ima 通道不可用 |
+| 百度网盘 | `baidu-drive`（bdpan CLI） | 百度通道不可用 |
+| 夸克网盘 | `quarkclouddrive`（quark-drive CLI） | 夸克通道不可用 |
+
+三通道互不阻断：缺哪个就少传哪个，其余环节照跑。
+`finder-shot-redhead` 截图环节仅 macOS（Quartz 窗口 API）；Linux 跳过截环节或改字体表。
+
+### 日常使用
+
+```bash
+# 初始化状态（工作根目录放博主逐字稿文件夹）
 python3 skills/transcript-pipeline/scripts/state.py init \
   --root "<你的工作根目录>" --blogger "<博主名>"
 
-# 3. 每步完成后标记，支持断点续跑
+# 每步完成后标记，支持断点续跑
 python3 skills/transcript-pipeline/scripts/state.py mark \
   --root "<根目录>" --blogger "<博主名>" --stage clean --done
 
-# 4. 看下一步做什么 / 汇总链接
+# 看下一步做什么 / 汇总链接
 python3 skills/transcript-pipeline/scripts/state.py next   --root "<根目录>" --blogger "<博主名>"
 python3 skills/transcript-pipeline/scripts/state.py links  --root "<根目录>"
 ```

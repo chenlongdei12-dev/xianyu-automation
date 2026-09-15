@@ -119,7 +119,11 @@ def cmd_next(a):
         return 0
     b = a.blogger
     print("下一个阶段: %s —— %s\n" % (cur, CN[cur]))
-    PY = "/Users/dei/.workbuddy/binaries/python/envs/default/bin/python"
+    # 跨机器适配：优先 WorkBuddy 托管 python，回退当前解释器
+    import glob as _glob
+    _cand = _glob.glob(os.path.expanduser(
+        "~/.workbuddy/binaries/python/envs/default/bin/python"))
+    PY = _cand[0] if _cand else sys.executable or "python3"
     S = os.path.dirname(os.path.abspath(__file__))
     hints = {
         "export": "调用 biji-export skill 导出该博主逐字稿到 <root>/%s/" % b,
@@ -136,8 +140,8 @@ def cmd_next(a):
                        "完成后 mark --stage upload_ima --done --note '已入库「库名」'（ima 无分享链接）" % (PY, S, b, b)),
         "upload_baidu": ("cd \"<root>/%s\" && /usr/bin/zip -q -r -e -P dora2026 \\\n"
                          "  \"/tmp/%s_抖音全部公开内容逐字稿_<N>篇.zip\" *.md\n"
-                         "export PATH=/Users/dei/.local/bin:$PATH\n"
-                         "bdpan upload \"/tmp/<zip>\" \"博主逐字稿/%s/<zip>\" --agentname workbuddy \\\n"
+                         "export PATH=\"$HOME/.local/bin:$PATH\"   # bdpan 不在默认 PATH\n"
+                         "bdpan upload \"/tmp/<zip>\" \"博主逐字稿/%s/<zip>\" --agentname <agent名> \\\n"
                          "  --session-input '<用户原话>' --session-id '<ts-rand>'\n"
                          "bdpan share \"博主逐字稿/%s/<zip>\" --period 0 …（永久；只传加密zip，禁封面/json）\n"
                          "验证：提取码流程后 grep risk-label 必须为 0\n"

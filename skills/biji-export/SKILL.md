@@ -18,7 +18,7 @@ triggers:
 ## 环境事实（直接用，不要重新探索）
 
 - **脚本**：`~/.workbuddy/skills/biji-export/scripts/biji_export.py`（单文件 CLI，5 个子命令）
-- **Python**：`/Users/dei/.workbuddy/binaries/python/envs/default/bin/python3`（playwright 1.58 已装）
+- **Python**：`~/.workbuddy/binaries/python/envs/default/bin/python3`（无则用系统 `python3`；需 playwright：`pip install playwright && playwright install chromium`）
 - **凭据缓存**：`~/.biji_exporter/skill_credentials.json`（token + csrf）
 - **登录态目录**：`~/.biji_exporter/browser_data_skill`（headless 自动刷新用）
 - **浏览器**：复用 DouClaw 的 chromium（`~/Library/Application Support/DouClaw/playwright-browsers`），不要重新下载

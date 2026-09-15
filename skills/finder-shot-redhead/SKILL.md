@@ -13,8 +13,8 @@ agent_created: true
 ## 用法
 
 ```bash
-/Users/dei/.workbuddy/binaries/python/envs/default/bin/python \
-  ~/.workbuddy/skills/finder-shot-redhead/scripts/make_cover.py \
+PY=$(ls ~/.workbuddy/binaries/python/envs/default/bin/python 2>/dev/null || command -v python3)
+$PY ~/.workbuddy/skills/finder-shot-redhead/scripts/make_cover.py \
   --folder "/绝对路径/目标文件夹" \
   --line1 "清华白也抖音全部公开内容逐字稿" \
   --line2 "网盘秒发" \
@@ -34,8 +34,8 @@ agent_created: true
 3. **中文字体**：`PingFang.ttc` 在本机不存在。可用 `/System/Library/Fonts/Hiragino Sans GB.ttc`（index=2 为 W6 粗体）或 `STHeiti Medium.ttc`（index=1 为 Heiti SC Medium）。
 4. **默认把红字直接压在截图本身上**（`--mode overlay`，画布尺寸必须与截图完全一致，不做扩展、不加白底抬头带——观自明确要求过）。两行**同字号 46px**（观自要求大小一致），行间距 42px（要留得开，不要太挤），整体垂直居中略下移 24px 避开顶部工具栏。红字用白色描边（stroke_width 4）保证压在文件列表上依然清晰。
    `--mode band` 是备选（上方加白底抬头），仅在用户明确要求时才用。
-5. 依赖：`pillow` + `pyobjc-framework-Quartz`，装在
-   `/Users/dei/.workbuddy/binaries/python/envs/default`。
+5. 依赖：`pillow` + `pyobjc-framework-Quartz`（装进任意 python3 环境均可：
+   `pip install pillow pyobjc-framework-Quartz`）。仅支持 macOS（Quartz 窗口 API + 系统字体）。
 
 ## 自检
 

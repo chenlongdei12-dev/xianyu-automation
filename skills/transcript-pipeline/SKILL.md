@@ -23,8 +23,9 @@ agent_created: true
 
 ## 状态文件（断点续跑的关键）
 
+**跨机器适配**：`$PY` 一律用「WorkBuddy 托管 python 优先、`python3` 回退」：
 ```bash
-PY=/Users/dei/.workbuddy/binaries/python/envs/default/bin/python
+PY=$(ls ~/.workbuddy/binaries/python/envs/default/bin/python 2>/dev/null || command -v python3)
 S=~/.workbuddy/skills/transcript-pipeline/scripts/state.py
 
 $PY $S init   --root "<工作根目录>" --blogger 清华白也
@@ -88,7 +89,7 @@ $PY ~/.workbuddy/skills/transcript-pipeline/scripts/merge_for_ima.py \
 
 **4.2 百度网盘**（`baidu-drive`，路径限 `/apps/bdpan/`）：
 ```bash
-export PATH="/Users/dei/.local/bin:$PATH"   # bdpan 不在默认 PATH
+export PATH="$HOME/.local/bin:$PATH"   # bdpan 不在默认 PATH
 bdpan upload "/tmp/<博主名>_抖音全部公开内容逐字稿_<N>篇.zip" "博主逐字稿/<博主名>/<同name>.zip" \
   --agentname workbuddy --session-input '<用户原话>' --session-id '<ts-6位随机>'
 bdpan share "博主逐字稿/<博主名>/<zip名>.zip" --period 0 …同公共参数   # 对加密 zip 分享，0 = 永久
@@ -127,12 +128,32 @@ $PY $S links --root "<工作根目录>"
 
 ## 环境事实（直接用，不要重新探索）
 
+### 新机器部署（三步）
+
+```bash
+# 1. 装 skill：把 4 个 skill 目录放进 agent 的 skills 目录（如 ~/.workbuddy/skills/）
+# 2. 环境自检（缺什么会给出修复命令；可选通道缺失不阻断其他环节）
+python3 ~/.workbuddy/skills/transcript-pipeline/scripts/doctor.py
+# 3. 登录态（人工，一次性）：
+#    Get笔记: biji_export.py login（需 GUI 机器跑一次，之后 token 自动无头刷新）
+#    ima:     ~/.config/ima/{client_id,api_key}
+#    百度:    bdpan login（baidu-drive skill）
+#    夸克:    quark-drive login（quarkclouddrive skill）
+```
+
+依赖的**外部 skill**（上传环节，缺了对应通道不可用但流水线其他环照跑）：
+- `baidu-drive`（bdpan CLI 安装/登录见其 SKILL.md）
+- `quarkclouddrive`（quark-drive CLI，install.sh）
+- `ima-skill`（官方 ima OpenAPI 封装）
+
+平台限制：`finder-shot-redhead` 截图环节仅 macOS（Quartz 窗口 API + 系统字体）；Linux 机器跳过截环节或自行改字体表。
+
 - **ima 凭据**：`~/.config/ima/client_id` + `api_key`（已配置）；CLI `~/.workbuddy/skills/ima-skill/ima_api.cjs`
 - **⚠️ COS 凭据传参铁律（2026-09-16 姜Dora首跑踩坑）**：`create_media` 返回的 cos_credential 必须落盘（如 `/tmp/cos_cred.json`）再用 python/subprocess 数组传参调 `cos-upload.cjs`。**严禁把 secret_id/token 复制进 shell 命令行**——长 token 会被截断，报 403 InvalidAccessKeyId，且极难排查。
 - **bdpan**：v3.8.7 在 `~/.local/bin`（不在默认 PATH）；登录态至 2026-10-15；操作范围限 `/apps/bdpan/`
 - **quark-drive**：`~/.workbuddy/skills/quarkclouddrive/scripts/quark-drive.cjs`；已授权（token 在 `workbuddy/config.json`）；每次调用前跑一次 `scripts/install.sh`
 - **biji 登录态**：`~/.biji_exporter/browser_data_skill`（headless 刷新用）；凭据 `~/.biji_exporter/skill_credentials.json`（JWT 30 分钟，CLI 自动续）
-- **默认工作根目录**：`/Users/dei/Desktop/优质博主文案/dontbesilent 相似博主/`
+- **默认工作根目录**（本机）：`~/Desktop/优质博主文案/dontbesilent 相似博主/`；其他机器由用户指定或默认 `~/博主逐字稿/`
 - **biji 导出目录名**：`<博主名>_<follow_id>`，导出后重命名为 `<博主名>` 再进流水线
 
 ## 红线

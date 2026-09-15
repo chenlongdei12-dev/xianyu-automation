@@ -13,12 +13,12 @@ agent_created: true
 ## 环境事实（直接用，不要重新探索）
 
 ```bash
-PY=/Users/dei/.workbuddy/binaries/python/envs/default/bin/python
+PY=$(ls ~/.workbuddy/binaries/python/envs/default/bin/python 2>/dev/null || command -v python3)
 TOOLKIT=~/.workbuddy/skills/transcript-cleanup/scripts/toolkit.py
 ```
 
-若 venv 不存在，先建：
-`/Users/dei/.workbuddy/binaries/python/versions/3.13.12/bin/python3 -m venv /Users/dei/.workbuddy/binaries/python/envs/default`
+若 venv 不存在，先建（或直接用系统 python3，本工具零第三方依赖）：
+`~/.workbuddy/binaries/python/versions/3.13.12/bin/python3 -m venv ~/.workbuddy/binaries/python/envs/default`
 
 ## 标准流程（六步，顺序不可换）
 
