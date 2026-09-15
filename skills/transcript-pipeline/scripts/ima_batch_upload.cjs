@@ -143,6 +143,10 @@ for (const f of todo) {
 }
 
 console.log(`\n完成: 成功 ${ok} / 失败 ${fail}（重跑自动续传）`);
-console.log(`知识库: 「${kbName}」`);
+console.log(`知识库: 「${kbName}」（共享库）`);
+console.log(`知识库ID: ${kbId}`);
+console.log(`入口: ima 客户端 → 知识库 → 「${kbName}」`);
+console.log(`⚠️ 分享链接: ima OpenAPI 无知识库分享端点（实测 create/get/update 均不含 share_url）。`);
+console.log(`   要把库分享给别人：ima 客户端打开该库 → 右上角「分享/邀请」生成链接，一次性手动操作。`);
 console.log(`状态文件: ${statePath}`);
 process.exit(fail ? 1 : 0);

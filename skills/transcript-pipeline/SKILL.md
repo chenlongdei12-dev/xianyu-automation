@@ -93,7 +93,8 @@ $PY ~/.workbuddy/skills/transcript-pipeline/scripts/merge_for_ima.py \
   脚本自动完成：search 按名找库（无则建**共享库**）→ 批量重名预检 → 逐篇五步上传 → 断点状态落 `_ima_batch_state.json`（重跑自动续传）。
 - **建库 API 要点**：`openapi/wiki/v1/create_knowledge_base`，参数 `{name, description, type:"KBT_SHARED_KB"}`（共享库，观自指定；KBT_MINE_KB 为个人库）。端点未列入官方文档，实测可用；**无删除库 API**，建错需 ima 客户端手动删。
 - 重名自动追加时间戳保留两者（IMA 不支持替换）。
-- 完成后 `mark --stage upload_ima --done --note '已入库「<博主名>逐字稿」N 篇（共享库）'`（ima 无分享链接，note 记库名+篇数）。
+- 完成后 `mark --stage upload_ima --done --note '已入库「<博主名>逐字稿」N 篇（共享库）'`。
+- **关于分享链接（2026-09-16 实测确认）**：ima OpenAPI **无知识库分享端点**（create/get/update 返回均不含 share_url，share 类端点不存在）。上传完成后向用户回报：库名 + 篇数 + 入口（ima 客户端 → 知识库）；如需外发链接，用户在 ima 客户端对该库点「分享/邀请」一次性手动生成。不要对 ima 通道承诺链接。
 - 兼容：`--kb-id` 传已有库则直接往里传（不校验类型）。
 
 **4.2 百度网盘**（`baidu-drive`，路径限 `/apps/bdpan/`）：
@@ -126,8 +127,14 @@ node scripts/quark-drive.cjs share <zip_fid> --title "<博主名>抖音全部公
 ```bash
 $PY $S links --root "<工作根目录>"
 ```
-把输出整理成三行反馈给用户：ima 库名（无链接）+ 百度永久链接 + 夸克永久链接。
-**对外动作红线**：链接生成后先把三条链接一并列给用户确认，再宣告完成；任何通道失败要在汇报中明确说清缺哪条、为什么。
+汇报格式（每博主四行）：
+```
+● <博主名>
+  ima   已入库「<博主名>逐字稿（共享库）」N 篇（API 无分享端点；ima 客户端 → 知识库 → 分享 可生成链接）
+  百度  <永久链接>（提取码 xx，解压密码 dora2026）
+  夸克  <永久链接>（解压密码 dora2026）
+```
+**对外动作红线**：链接生成后先把三条一并列给用户确认，再宣告完成；任何通道失败要在汇报中明确说清缺哪条、为什么。ima 不承诺链接（OpenAPI 无分享端点），只报库名+篇数+客户端生成路径。
 
 ## 批量（外层大循环）
 
