@@ -82,10 +82,19 @@ $PY ~/.workbuddy/skills/transcript-pipeline/scripts/merge_for_ima.py \
   --out "<工作根目录>/_ima_upload/<博主名>.md"
 ```
 
-**4.1 ima 知识库**（走 `ima-skill` knowledge-base 模块，media_type=7 Markdown，上限 10MB）：
-- ⚠️ **ima OpenAPI 没有创建知识库接口**。目标库二选一：用户点名了库 → `search_knowledge_base` 按名搜 ID；未点名 → 默认「观自的知识库」（个人库）并在汇报时说明库名。
-- 上传走标准五步：`preflight-check.cjs` → `check_repeated_names`（重名 → 追加时间戳，IMA 不支持替换）→ `create_media` → `cos-upload.cjs`（大文件加 `--timeout 300000`）→ `add_knowledge`（title 必须等于文件名）。
-- 完成后 `mark --stage upload_ima --done --note "已入库「库名」"`（无分享链接，note 记库名）。
+**4.1 ima 知识库**（走 `ima-skill` knowledge-base 模块，media_type=7 Markdown，单篇上限 10MB）：
+- **逐篇上传模式（2026-09-16 起，观自确认）**：每博主**新建独立知识库**，逐篇上传，不再合并。
+  ```bash
+  node ~/.workbuddy/skills/transcript-pipeline/scripts/ima_batch_upload.cjs \
+    --folder "<工作根目录>/<博主名>" \
+    --kb-name "<博主名>逐字稿" \
+    --description "<博主名>抖音全部公开内容逐字稿"
+  ```
+  脚本自动完成：search 按名找库（无则 `create_knowledge_base` KBT_MINE_KB 新建）→ 批量重名预检 → 逐篇五步上传 → 断点状态落 `_ima_batch_state.json`（重跑自动续传）。
+- **建库 API 要点**：`openapi/wiki/v1/create_knowledge_base`，参数 `{name, description, type:"KBT_MINE_KB"}`（文档未列此端点，实测可用；无删除库 API，建错需 ima 客户端手动删）。
+- 重名自动追加时间戳保留两者（IMA 不支持替换）。
+- 完成后 `mark --stage upload_ima --done --note '已入库「<博主名>逐字稿」N 篇'`（ima 无分享链接，note 记库名+篇数）。
+- 兼容旧行为：`--kb-id` 传已有库则直接往里传。
 
 **4.2 百度网盘**（`baidu-drive`，路径限 `/apps/bdpan/`）：
 ```bash

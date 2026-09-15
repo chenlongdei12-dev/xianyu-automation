@@ -16,7 +16,7 @@ export  六步QA  红字封面  三通道互不阻断  汇总反馈
 | 导 | `biji-export` | Get笔记（biji.com）订阅博主逐字稿批量导出，增量续传，token 自动无头刷新 |
 | 清 | `transcript-cleanup` | 只修错不润色：错别字/术语统一/格式规范/重分段/QA 报告 |
 | 截 | `finder-shot-redhead` | 访达截图 + 两行红字封面（46px 同字号直压截图本体） |
-| 传 | `transcript-pipeline` | 总编排：状态机断点续跑 + ima 合并上传 + 网盘加密 zip 交付 |
+| 传 | `transcript-pipeline` | 总编排：状态机断点续跑 + ima 逐篇建库上传 + 网盘加密 zip 交付 |
 | 报 | `transcript-pipeline` | `state.py links` 一条命令输出三通道链接 |
 
 ## 快速开始（空白电脑三步部署）
@@ -64,13 +64,14 @@ python3 skills/transcript-pipeline/scripts/state.py links  --root "<根目录>"
 
 ## 关键铁律（实测踩坑沉淀）
 
-1. **网盘交付只传一个加密 zip**（`zip -e -P` 加密码，仅含 md 逐字稿）：
+1. **ima 逐篇上传 + 每博主独立知识库**：`ima_batch_upload.cjs` 自动建库（`create_knowledge_base` KBT_MINE_KB，官方文档未列此端点、实测可用）→ 批量重名预检 → 逐篇五步上传 → 断点续传（`_ima_batch_state.json`）。不合并文稿。
+2. **网盘交付只传一个加密 zip**（`zip -e -P` 加密码，仅含 md 逐字稿）：
    - 百度对散文件 md **和明文 zip** 都会内容扫描判「部分文件违规，已被过滤」——明文 zip 也会在数小时内被补扫补判
    - 不上传封面 png、不上传导出工具的 `.biji_export_meta.json`
-2. **分享后必验证**：百度走提取码流程后检查 `risk-label`（必须 0）；夸克 `share-detail` 查 `partial_violation=false`
-3. **清洗只修错不润色**：口播重复/语气词是真实口语，保留；判断不了的进存疑清单
-4. **ima 上传必须合并单文件**（碎 md 合并成一个合集再传，COS 凭据用文件传参防截断）
+3. **分享后必验证**：百度走提取码流程后检查 `risk-label`（必须 0）；夸克 `share-detail` 查 `partial_violation=false`
+4. **清洗只修错不润色**：口播重复/语气词是真实口语，保留；判断不了的进存疑清单
 5. **三通道互不阻断**：任一失败不影响其他，汇报时如实说明
+6. **ima 无删除库 API**：建库前确认名称，建错了去 ima 客户端手动删
 
 ## 依赖环境
 

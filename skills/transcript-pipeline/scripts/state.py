@@ -134,10 +134,10 @@ def cmd_next(a):
                  "  --folder \"<root>/%s\" \\\n"
                  "  --line1 \"%s抖音全部公开内容逐字稿\" --line2 \"网盘秒发\" \\\n"
                  "  --out \"<root>/%s_红字封面.png\"" % (PY, b, b, b)),
-        "upload_ima": ("%s %s/merge_for_ima.py --folder \"<root>/%s\" \\\n"
-                       "  --out \"<root>/_ima_upload/%s.md\"\n"
-                       "然后按 ima-skill knowledge-base 流程上传到指定知识库（media_type=7 Markdown）\n"
-                       "完成后 mark --stage upload_ima --done --note '已入库「库名」'（ima 无分享链接）" % (PY, S, b, b)),
+        "upload_ima": ("node %s/ima_batch_upload.cjs --folder \"<root>/%s\" \\\n"
+                       "  --kb-name \"%s逐字稿\" --description \"%s抖音全部公开内容逐字稿\"\n"
+                       "（自动：找库/新建KBT_MINE_KB → 批量重名预检 → 逐篇五步上传 → 断点续传）\n"
+                       "完成后 mark --stage upload_ima --done --note '已入库「%s逐字稿」N 篇'" % (S, b, b, b, b)),
         "upload_baidu": ("cd \"<root>/%s\" && /usr/bin/zip -q -r -e -P dora2026 \\\n"
                          "  \"/tmp/%s_抖音全部公开内容逐字稿_<N>篇.zip\" *.md\n"
                          "export PATH=\"$HOME/.local/bin:$PATH\"   # bdpan 不在默认 PATH\n"
