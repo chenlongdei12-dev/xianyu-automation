@@ -73,9 +73,9 @@ if (!kbId) {
   if (hit) { kbId = hit.kb_id; console.log(`知识库已存在: 「${kbName}」`); }
   else {
     const created = imaApi('openapi/wiki/v1/create_knowledge_base',
-      { name: kbName, description: args.description || `${kbName}（transcript-pipeline 自动创建）`, type: 'KBT_MINE_KB' });
+      { name: kbName, description: args.description || `${kbName}（transcript-pipeline 自动创建）`, type: 'KBT_SHARED_KB' });
     kbId = created.id;
-    console.log(`已新建知识库: 「${kbName}」 id=${kbId.slice(0, 12)}…`);
+    console.log(`已新建共享知识库: 「${kbName}」 id=${kbId.slice(0, 12)}…`);
   }
 } else {
   console.log(`使用指定知识库 id=${kbId.slice(0, 12)}…`);

@@ -83,18 +83,18 @@ $PY ~/.workbuddy/skills/transcript-pipeline/scripts/merge_for_ima.py \
 ```
 
 **4.1 ima 知识库**（走 `ima-skill` knowledge-base 模块，media_type=7 Markdown，单篇上限 10MB）：
-- **逐篇上传模式（2026-09-16 起，观自确认）**：每博主**新建独立知识库**，逐篇上传，不再合并。
+- **逐篇上传 + 共享知识库（2026-09-16 观自确认）**：每博主**新建独立共享知识库**，逐篇上传，不合并。
   ```bash
   node ~/.workbuddy/skills/transcript-pipeline/scripts/ima_batch_upload.cjs \
     --folder "<工作根目录>/<博主名>" \
     --kb-name "<博主名>逐字稿" \
     --description "<博主名>抖音全部公开内容逐字稿"
   ```
-  脚本自动完成：search 按名找库（无则 `create_knowledge_base` KBT_MINE_KB 新建）→ 批量重名预检 → 逐篇五步上传 → 断点状态落 `_ima_batch_state.json`（重跑自动续传）。
-- **建库 API 要点**：`openapi/wiki/v1/create_knowledge_base`，参数 `{name, description, type:"KBT_MINE_KB"}`（文档未列此端点，实测可用；无删除库 API，建错需 ima 客户端手动删）。
+  脚本自动完成：search 按名找库（无则建**共享库**）→ 批量重名预检 → 逐篇五步上传 → 断点状态落 `_ima_batch_state.json`（重跑自动续传）。
+- **建库 API 要点**：`openapi/wiki/v1/create_knowledge_base`，参数 `{name, description, type:"KBT_SHARED_KB"}`（共享库，观自指定；KBT_MINE_KB 为个人库）。端点未列入官方文档，实测可用；**无删除库 API**，建错需 ima 客户端手动删。
 - 重名自动追加时间戳保留两者（IMA 不支持替换）。
-- 完成后 `mark --stage upload_ima --done --note '已入库「<博主名>逐字稿」N 篇'`（ima 无分享链接，note 记库名+篇数）。
-- 兼容旧行为：`--kb-id` 传已有库则直接往里传。
+- 完成后 `mark --stage upload_ima --done --note '已入库「<博主名>逐字稿」N 篇（共享库）'`（ima 无分享链接，note 记库名+篇数）。
+- 兼容：`--kb-id` 传已有库则直接往里传（不校验类型）。
 
 **4.2 百度网盘**（`baidu-drive`，路径限 `/apps/bdpan/`）：
 ```bash

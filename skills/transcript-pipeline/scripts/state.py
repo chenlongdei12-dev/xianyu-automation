@@ -136,8 +136,8 @@ def cmd_next(a):
                  "  --out \"<root>/%s_红字封面.png\"" % (PY, b, b, b)),
         "upload_ima": ("node %s/ima_batch_upload.cjs --folder \"<root>/%s\" \\\n"
                        "  --kb-name \"%s逐字稿\" --description \"%s抖音全部公开内容逐字稿\"\n"
-                       "（自动：找库/新建KBT_MINE_KB → 批量重名预检 → 逐篇五步上传 → 断点续传）\n"
-                       "完成后 mark --stage upload_ima --done --note '已入库「%s逐字稿」N 篇'" % (S, b, b, b, b)),
+                       "（自动：找库/新建共享库KBT_SHARED_KB → 批量重名预检 → 逐篇五步上传 → 断点续传）\n"
+                       "完成后 mark --stage upload_ima --done --note '已入库「%s逐字稿」N 篇（共享库）'" % (S, b, b, b, b)),
         "upload_baidu": ("cd \"<root>/%s\" && /usr/bin/zip -q -r -e -P dora2026 \\\n"
                          "  \"/tmp/%s_抖音全部公开内容逐字稿_<N>篇.zip\" *.md\n"
                          "export PATH=\"$HOME/.local/bin:$PATH\"   # bdpan 不在默认 PATH\n"
