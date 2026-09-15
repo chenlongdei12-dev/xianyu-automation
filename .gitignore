@@ -1,0 +1,17 @@
+# 凭据与登录态（绝不入库）
+*.token
+*_credentials.json
+browser_data*/
+.biji_export_meta.json
+
+# 运行产物
+_pipeline_state.json
+_ima_upload/
+备份_原始逐字稿_*/
+*.zip
+*.png
+
+# 系统
+.DS_Store
+__pycache__/
+*.pyc
